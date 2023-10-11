@@ -3,9 +3,6 @@
 # Copyright 2020 Tecnativa - David Vidal
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 from odoo import api, fields, models
-import logging
-
-_logger = logging.getLogger(__name__)
 
 
 class StockPicking(models.Model):
@@ -65,12 +62,8 @@ class StockPicking(models.Model):
             # These won't ever autoupdate, so we don't want to evaluate them
             ("delivery_type", "not in", [False, "fixed", "base_one_rule"]),
         ])
-        for picking in pickings:
-            try:
-                pickings.tracking_state_update()
-            except Exception as exc:
-                _logger.error("Error updating picking %s state: %s", picking.name, exc)
-                
+        pickings.tracking_state_update()
+
     def _get_delivery_mail_context(self):
         """Extensible context for customization"""
         delivery_template_id = self.env.ref(
